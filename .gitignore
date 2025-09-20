@@ -21,15 +21,12 @@ Session.vim
 
 ### https://raw.github.com/github/gitignore/90f149de451a5433aebd94d02d11b0e28843a1af/Terraform.gitignore
 
-# local ref directories ref/ 
-ref/
-
 # Local .terraform directories
 **/.terraform/*
 
 # .tfstate files
-# *.tfstate
-# *.tfstate.*
+*.tfstate
+*.tfstate.*
 
 # Crash log files
 crash.log
@@ -59,4 +56,10 @@ credentials.json
 
 # File to populate env vars used by Docker test runs
 .envrc
-.env
+
+# local ref files 
+ref/
+policy-library/
+
+# opencode config
+.opencode/

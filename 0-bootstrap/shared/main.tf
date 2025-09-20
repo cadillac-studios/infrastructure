@@ -3,7 +3,7 @@ locals {
 }
 
 module "org_iam" {
-  source          = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/organization?ref=v44.1.0"
+  source          = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/organization?ref=v41.1.0"
   organization_id = "organizations/${var.org_id}"
   iam_by_principals = {
     "group:${var.groups.required_groups.group_billing_admins}" = [
@@ -23,7 +23,7 @@ module "org_iam" {
     ]
   }
 }
-
+#
 resource "google_folder" "bootstrap" {
   display_name = "${var.folder_prefix}-bootstrap"
   parent       = local.parent
@@ -36,7 +36,7 @@ resource "random_id" "seed_project_suffix" {
 }
 
 module "seed_bootstrap" {
-  source           = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/project?ref=v44.1.0"
+  source           = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/project?ref=v41.1.0"
   name             = "${var.project_prefix}-b-seed-${random_id.seed_project_suffix.hex}"
   descriptive_name = "${var.project_prefix}-b-seed"
   lien_reason      = "Project Factory lien"
@@ -101,11 +101,11 @@ module "seed_bootstrap" {
   depends_on = [module.required_group]
 }
 
-# KMS service for encrypting tf state buckets
-# use defult_region_2 (currently set as 'asia-southeast1' ) as   
-# default_region (asia-east2 (HK)) does not asia multi-regional bucket  
+# # KMS service for encrypting tf state buckets
+# # use defult_region_2 (currently set as 'asia-southeast1' ) as   
+# # default_region (asia-east2 (HK)) does not asia multi-regional bucket  
 module "kms" {
-  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/kms?ref=v44.1.0"
+  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/kms?ref=v41.1.0"
   project_id = module.seed_bootstrap.project_id
   keyring = {
     location = var.default_region_2
@@ -114,6 +114,7 @@ module "kms" {
   keys = {
     prj-key = {
       rotation_period = "7776000s"
+      # use google managed service account generated on (bucket creation)
       iam = {
         "roles/cloudkms.cryptoKeyDecrypter" = [
           "serviceAccount:service-${module.seed_bootstrap.number}@gs-project-accounts.iam.gserviceaccount.com",
@@ -125,34 +126,34 @@ module "kms" {
     }
   }
 }
-
-resource "random_id" "gh_cicd_project_suffix" {
-  byte_length = 2
-}
-
-module "gh_cicd" {
-  source           = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/project?ref=v44.1.0"
-  name             = "${var.project_prefix}-b-cicd-wif-gh-${random_id.gh_cicd_project_suffix.hex}"
-  descriptive_name = "${var.project_prefix}-b-cicd-wif-gh"
-  parent           = google_folder.bootstrap.id
-  billing_account  = var.billing_account
-  services = [
-    "compute.googleapis.com",
-    "admin.googleapis.com",
-    "iam.googleapis.com",
-    "billingbudgets.googleapis.com",
-    "cloudbilling.googleapis.com",
-    "serviceusage.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "iamcredentials.googleapis.com",
-  ]
-  deletion_policy = var.project_deletion_policy
-  service_config = {
-    disable_on_destroy         = true
-    disable_dependent_services = true
-  }
-  default_service_account = "disable"
-  iam = {
-    "roles/editor" = []
-  }
-}
+#
+# resource "random_id" "gh_cicd_project_suffix" {
+#   byte_length = 2
+# }
+#
+# module "gh_cicd" {
+#   source           = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/project?ref=v41.1.0"
+#   name             = "${var.project_prefix}-b-cicd-wif-gh-${random_id.gh_cicd_project_suffix.hex}"
+#   descriptive_name = "${var.project_prefix}-b-cicd-wif-gh"
+#   parent           = google_folder.bootstrap.id
+#   billing_account  = var.billing_account
+#   services = [
+#     "compute.googleapis.com",
+#     "admin.googleapis.com",
+#     "iam.googleapis.com",
+#     "billingbudgets.googleapis.com",
+#     "cloudbilling.googleapis.com",
+#     "serviceusage.googleapis.com",
+#     "cloudresourcemanager.googleapis.com",
+#     "iamcredentials.googleapis.com",
+#   ]
+#   deletion_policy = var.project_deletion_policy
+#   service_config = {
+#     disable_on_destroy         = true
+#     disable_dependent_services = true
+#   }
+#   default_service_account = "disable"
+#   iam = {
+#     "roles/editor" = []
+#   }
+# }

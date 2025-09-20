@@ -4,7 +4,7 @@ billing_account = "011559-E53C8C-98FF02"
 
 groups = {
   create_required_groups = true
-  billing_project        = "prj-b-bootstrap"
+  billing_project        = "prj-b-bootstrap-472322"
   required_groups = {
     group_org_admins     = "gcp-organization-admins@thecadillacstudio.com"
     group_billing_admins = "gcp-billing-admins@thecadillacstudio.com"
@@ -14,7 +14,8 @@ groups = {
   }
 }
 
-default_region     = "asia-east2"
-default_region_2   = "asia-southeast1"
-default_region_gcs = "ASIA"
-default_region_kms = "asia"
+default_region          = "asia-east2"
+default_region_2        = "asia-southeast1"
+default_region_gcs      = "ASIA"
+default_region_kms      = "asia"
+# project_deletion_policy = "DELETE"

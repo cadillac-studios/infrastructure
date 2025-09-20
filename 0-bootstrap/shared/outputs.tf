@@ -2,21 +2,21 @@ output "seed_project_id" {
   description = "Project where service accounts and core APIs will be enabled."
   value       = module.seed_bootstrap.project_id
 }
-
-output "cicd_project_id" {
-  description = "Project where the CI/CD infrastructure for GitHub Action resides."
-  value       = module.gh_cicd.project_id
-}
+#
+# output "cicd_project_id" {
+#   description = "Project where the CI/CD infrastructure for GitHub Action resides."
+#   value       = module.gh_cicd.project_id
+# }
 
 output "bootstrap_step_terraform_service_account_email" {
   description = "Bootstrap Step Terraform Account"
   value       = module.sa_bootstrap.email
 }
 
-output "organization_step_terraform_service_account_email" {
-  description = "Organization Step Terraform Account"
-  value       = module.sa_org.email
-}
+# output "organization_step_terraform_service_account_email" {
+#   description = "Organization Step Terraform Account"
+#   value       = module.sa_org.email
+# }
 #
 # output "environment_step_terraform_service_account_email" {
 #   description = "Environment Step Terraform Account"
